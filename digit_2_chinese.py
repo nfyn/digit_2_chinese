@@ -114,6 +114,31 @@ def to_chinese(num: Union[str, int]) -> str:
         raise ValueError('The number string format is not correct')
 
 
+def to_chinese_pro(num: Union[str, int]) -> str:
+    """
+    数字转换成中文入口函数（优化版）
+    :param num: 数字或者数字字符串
+    :return:完整的中文数字字符串
+    """
+    num_str = str(num)
+    # 对输入的字符串进行格式校验
+    num_match = re.fullmatch(r'(?P<int_str>\d*)(\.(?P<dec_str>\d+))?', num_str)
+    if num_match is None:
+        raise ValueError('The number string format is not correct')
+
+    int_str = num_match.groupdict().get('int_str')
+    dec_str = num_match.groupdict().get('dec_str')
+    if dec_str and int_str == '':
+        int_str = '0'
+
+    if dec_str is not None:
+        integer_str = integer_2_chinese(int_str)
+        decimal_str = decimal_2_chinese(dec_str)
+        return integer_str + f'点{decimal_str}' if decimal_str else decimal_str
+    else:
+        return integer_2_chinese(int_str)
+
+      
 if __name__ == '__main__':
     # 整数
     test_num = '123456789'
